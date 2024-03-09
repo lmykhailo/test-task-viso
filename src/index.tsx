@@ -24,7 +24,7 @@ type ContextType = {
 
 export const Context = createContext<ContextType | null>(null);
 
-const firestore = getFirestore();
+export const firestore = getFirestore();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

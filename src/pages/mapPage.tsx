@@ -26,7 +26,7 @@ const MapPage: React.FC = () => {
 
       const googleMarkers = markers.map((marker) => {
         const googleMarker = new google.maps.Marker({
-          position: { lat: marker.lat, lng: marker.lng },
+          position: { lat: marker.location.lat, lng: marker.location.lng },
           label: marker.label,
           draggable: true,
         });
