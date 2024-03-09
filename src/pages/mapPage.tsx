@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import React, { useEffect, useRef } from "react";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import useMarkers from "../hooks/useMarkers";
 
@@ -50,7 +50,7 @@ const MapPage: React.FC = () => {
         markers: googleMarkers,
       });
     }
-  }, [markers]);
+  }, [markers, handleDeleteMarker, handleMarkerDragEnd]);
 
   const onLoad = (mapInstance: google.maps.Map) => {
     mapRef.current = mapInstance;
