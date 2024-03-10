@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { IQuestMarker, IQuestMarkerFirebase } from "../types/IQuestMarker";
+import { useState } from "react";
+import { IQuestMarkerFirebase } from "../types/IQuestMarker";
 import useFirebase from "./useFirebase";
 import { Timestamp } from "@firebase/firestore";
 
