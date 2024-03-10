@@ -46,7 +46,7 @@ const useFirebase = () => {
     for (const marker of markers) {
       deleteQuest(marker.firebaseId);
     }
-    fetchQuests;
+    fetchQuests();
   };
 
   const updateQuest = async (
