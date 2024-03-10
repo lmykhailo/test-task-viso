@@ -64,7 +64,8 @@ const useFirebase = () => {
 
   useEffect(() => {
     fetchQuests();
-  }, [fetchQuests]);
+    //@eslint-disable-next-line
+  }, []);
 
   return { markers, postQuest, deleteQuest, updateQuest, deleteAllQuests };
 };
