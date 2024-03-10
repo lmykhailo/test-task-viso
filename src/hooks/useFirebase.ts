@@ -64,7 +64,7 @@ const useFirebase = () => {
 
   useEffect(() => {
     fetchQuests();
-  });
+  }, [fetchQuests]);
 
   return { markers, postQuest, deleteQuest, updateQuest, deleteAllQuests };
 };
