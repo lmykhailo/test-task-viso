@@ -9,7 +9,7 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { IQuestMarker } from "../types/IQuestMarker";
+import { IQuestMarker, IQuestMarkerFirebase } from "../types/IQuestMarker";
 
 const useFirebase = () => {
   const context = useContext(Context);
@@ -19,15 +19,18 @@ const useFirebase = () => {
   }
   const { firestore } = context as { firestore: Firestore };
 
-  const [quests, setQuests] = useState<IQuestMarker[]>([]);
+  const [markers, setMarkers] = useState<IQuestMarkerFirebase[]>([]);
 
   const fetchQuests = async () => {
     const querySnapshot = await getDocs(collection(firestore, "quests"));
-    const questsArray: IQuestMarker[] = [];
+    const questsArray: IQuestMarkerFirebase[] = [];
     querySnapshot.forEach((doc) => {
-      questsArray.push({ id: doc.id, ...doc.data() } as IQuestMarker);
+      questsArray.push({
+        firebaseId: doc.id,
+        ...doc.data(),
+      } as IQuestMarkerFirebase);
     });
-    setQuests(questsArray);
+    setMarkers(questsArray);
   };
 
   const postQuest = async (quest: Omit<IQuestMarker, "id">) => {
@@ -39,16 +42,31 @@ const useFirebase = () => {
     await deleteDoc(doc(firestore, "quests", id));
     fetchQuests();
   };
-  const updateQuest = async (id: string, quest: Omit<IQuestMarker, "id">) => {
-    await updateDoc(doc(firestore, "quests", id), quest);
-    fetchQuests();
+  const deleteAllQuests = async () => {
+    for (const marker of markers) {
+      deleteQuest(marker.firebaseId);
+    }
+    fetchQuests;
+  };
+
+  const updateQuest = async (
+    id: string,
+    quest: Omit<IQuestMarkerFirebase, "id">
+  ) => {
+    try {
+      const questDocRef = doc(firestore, "quests", id);
+      await updateDoc(questDocRef, quest);
+      fetchQuests();
+    } catch (error) {
+      console.error("Error updating document:", error);
+    }
   };
 
   useEffect(() => {
     fetchQuests();
   }, []);
 
-  return { quests, postQuest, deleteQuest, updateQuest };
+  return { markers, postQuest, deleteQuest, updateQuest, deleteAllQuests };
 };
 
 export default useFirebase;

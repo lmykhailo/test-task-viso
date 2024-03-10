@@ -1,8 +1,12 @@
-import { useState } from "react";
-import { IQuestMarker } from "../types/IQuestMarker";
+import { useEffect, useState } from "react";
+import { IQuestMarker, IQuestMarkerFirebase } from "../types/IQuestMarker";
+import useFirebase from "./useFirebase";
+import { Timestamp } from "@firebase/firestore";
 
 const useMarkers = () => {
-  const [markers, setMarkers] = useState<IQuestMarker[]>([]);
+  const { markers, postQuest, deleteQuest, updateQuest, deleteAllQuests } =
+    useFirebase();
+
   const [labelIndex, setLabelIndex] = useState(0);
   const [mapCenter, setMapCenter] = useState<google.maps.LatLngLiteral>({
     lat: 48.43681203298874,
@@ -13,7 +17,7 @@ const useMarkers = () => {
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
       const newQuestMarker = {
-        id: `${markers.length + 1}`,
+        id: Timestamp.now().toMillis().toString(),
         location: {
           lat: event.latLng.lat(),
           lng: event.latLng.lng(),
@@ -21,7 +25,12 @@ const useMarkers = () => {
         label: `${labelIndex + 1}`,
         nextQuestId: markers.length > 0 ? `${markers.length - 1}` : undefined,
       };
-      setMarkers((markers) => [...markers, newQuestMarker]);
+
+      if (newQuestMarker.nextQuestId === undefined) {
+        delete newQuestMarker.nextQuestId;
+      }
+
+      postQuest(newQuestMarker);
       setMapCenter({
         lat: newQuestMarker.location.lat,
         lng: newQuestMarker.location.lng,
@@ -31,10 +40,10 @@ const useMarkers = () => {
   };
 
   const handleMarkerDragEnd = (
-    markerId: string,
+    firebaseId: string,
     event: google.maps.MapMouseEvent
   ) => {
-    const marker = markers.find((m) => m.id === markerId);
+    const marker = markers.find((m) => m.firebaseId === firebaseId);
     if (marker) {
       const updatedMarker = {
         ...marker,
@@ -43,9 +52,7 @@ const useMarkers = () => {
           lng: event.latLng?.lng() || 0,
         },
       };
-      setMarkers((prevMarkers) =>
-        prevMarkers.map((m) => (m.id === markerId ? updatedMarker : m))
-      );
+      updateQuest(firebaseId, updatedMarker);
       setMapCenter({
         lat: updatedMarker.location.lat,
         lng: updatedMarker.location.lng,
@@ -53,13 +60,13 @@ const useMarkers = () => {
     }
   };
 
-  const handleDeleteMarker = (marker: IQuestMarker) => {
-    setMarkers((markers) => markers.filter((m) => m !== marker));
+  const handleDeleteMarker = (marker: IQuestMarkerFirebase) => {
+    deleteQuest(marker.firebaseId);
     setLabelIndex((prevIndex) => prevIndex - 1);
   };
 
   const resetMarkers = () => {
-    setMarkers([]);
+    deleteAllQuests();
     setLabelIndex(0);
   };
 

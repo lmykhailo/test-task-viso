@@ -34,7 +34,7 @@ const MapPage: React.FC = () => {
         googleMarker.addListener(
           "dragend",
           (event: google.maps.MapMouseEvent) => {
-            handleMarkerDragEnd(marker.id, event);
+            handleMarkerDragEnd(marker.firebaseId, event);
           }
         );
 

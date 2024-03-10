@@ -7,3 +7,7 @@ export interface IQuestMarker {
   label: string;
   nextQuestId?: string;
 }
+
+export interface IQuestMarkerFirebase extends IQuestMarker {
+  firebaseId: string;
+}
