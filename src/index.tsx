@@ -7,12 +7,12 @@ import { FirebaseApp, initializeApp } from "firebase/app";
 import { Firestore, getFirestore } from "@firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCnuUR5uArKefRn4zDFz5i9MWWS5kN_Fx8",
-  authDomain: "visotesttask.firebaseapp.com",
-  projectId: "visotesttask",
-  storageBucket: "visotesttask.appspot.com",
-  messagingSenderId: "196403105160",
-  appId: "1:196403105160:web:0b8bf35ebe06343bd8fe3d",
+  apiKey: "AIzaSyAY4zyzgcQ-jFknyYgVjy2Ovprel7N389M",
+  authDomain: "visotesttask-e4979.firebaseapp.com",
+  projectId: "visotesttask-e4979",
+  storageBucket: "visotesttask-e4979.appspot.com",
+  messagingSenderId: "23001544473",
+  appId: "1:23001544473:web:64971c2675a1e86488f788",
 };
 
 const app = initializeApp(firebaseConfig);

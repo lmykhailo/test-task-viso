@@ -18,12 +18,14 @@ const MapPage: React.FC = () => {
   const mapRef = useRef<google.maps.Map>();
   const markerClustererRef = useRef<MarkerClusterer>();
 
+  //UseEffect to create clusters on the map
   useEffect(() => {
     if (mapRef.current && markers.length) {
       if (markerClustererRef.current) {
         markerClustererRef.current.clearMarkers();
       }
 
+      //Creating intial markers on the map
       const googleMarkers = markers.map((marker) => {
         const googleMarker = new google.maps.Marker({
           position: { lat: marker.location.lat, lng: marker.location.lng },
@@ -31,6 +33,7 @@ const MapPage: React.FC = () => {
           draggable: true,
         });
 
+        //Functionality for dragging the marker
         googleMarker.addListener(
           "dragend",
           (event: google.maps.MapMouseEvent) => {
@@ -38,6 +41,7 @@ const MapPage: React.FC = () => {
           }
         );
 
+        //Functionality for deleting the marker
         googleMarker.addListener("click", () => {
           handleDeleteMarker(marker);
         });
@@ -45,6 +49,7 @@ const MapPage: React.FC = () => {
         return googleMarker;
       });
 
+      //Creating clusters based on the current markers
       markerClustererRef.current = new MarkerClusterer({
         map: mapRef.current,
         markers: googleMarkers,
@@ -56,6 +61,7 @@ const MapPage: React.FC = () => {
     mapRef.current = mapInstance;
   };
 
+  //Clean-up function
   const handleResetMarkers = () => {
     if (markerClustererRef.current) {
       markerClustererRef.current.clearMarkers();

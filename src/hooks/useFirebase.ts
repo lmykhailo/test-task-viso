@@ -33,19 +33,25 @@ const useFirebase = () => {
     setMarkers(questsArray);
   }, [firestore]);
 
+  //Possible to create optimistic update for post, delete and update to remove the slight delay
+  //but, I guess, it's not necessary for this task, also not very hard to implement in the future
   const postQuest = async (quest: Omit<IQuestMarker, "id">) => {
-    await addDoc(collection(firestore, "quests"), quest);
+    const docRef = await addDoc(collection(firestore, "quests"), quest);
     fetchQuests();
+
+    return docRef.id;
   };
 
   const deleteQuest = async (id: string) => {
     await deleteDoc(doc(firestore, "quests", id));
     fetchQuests();
   };
+
   const deleteAllQuests = async () => {
-    for (const marker of markers) {
-      deleteQuest(marker.firebaseId);
-    }
+    const deletePromises = markers.map((marker) =>
+      deleteDoc(doc(firestore, "quests", marker.firebaseId))
+    );
+    await Promise.all(deletePromises);
     fetchQuests();
   };
 
