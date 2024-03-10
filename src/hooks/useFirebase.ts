@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { Context } from "..";
 import {
   Firestore,
@@ -21,7 +21,7 @@ const useFirebase = () => {
 
   const [markers, setMarkers] = useState<IQuestMarkerFirebase[]>([]);
 
-  const fetchQuests = async () => {
+  const fetchQuests = useCallback(async () => {
     const querySnapshot = await getDocs(collection(firestore, "quests"));
     const questsArray: IQuestMarkerFirebase[] = [];
     querySnapshot.forEach((doc) => {
@@ -31,7 +31,7 @@ const useFirebase = () => {
       } as IQuestMarkerFirebase);
     });
     setMarkers(questsArray);
-  };
+  }, [firestore]);
 
   const postQuest = async (quest: Omit<IQuestMarker, "id">) => {
     await addDoc(collection(firestore, "quests"), quest);
@@ -64,8 +64,7 @@ const useFirebase = () => {
 
   useEffect(() => {
     fetchQuests();
-    //@eslint-disable-next-line
-  }, []);
+  }, [fetchQuests]);
 
   return { markers, postQuest, deleteQuest, updateQuest, deleteAllQuests };
 };
